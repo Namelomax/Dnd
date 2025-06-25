@@ -272,7 +272,7 @@ async function checkLoadParameters() {
 
   // 1. Попытка загрузки world.map из корня
   try {
-    const response = await fetch("world.map");
+    const response = await fetch("Koroksia 2025-06-25-18-45.map");
     if (response.ok) {
       WARN && console.warn("Loading map from local file: world.map");
       const blob = await response.blob();
