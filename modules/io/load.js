@@ -184,9 +184,8 @@ function showUploadMessage(type, mapData, mapVersion) {
   let message, title;
 
   if (type === "invalid") {
-    message = "The file does not look like a valid save file.<br>Please check the data format";
-    title = "Invalid file";
     parseLoadedData(mapData, mapVersion);
+    return;
   } else if (type === "updated") {
     parseLoadedData(mapData, mapVersion);
     return;
