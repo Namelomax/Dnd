@@ -304,15 +304,15 @@ async function checkLoadParameters() {
   try {
     const response = await fetch("Koroksia 2025-06-25-18-45.map");
     if (response.ok) {
-      WARN && console.warn("Loading map from local file: world.map");
+      WARN && console.warn("Loading map from local file: Koroksia 2025-06-25-18-45.map");
       const blob = await response.blob();
       uploadMap(blob);
       return;
     } else {
-      console.warn("world.map not found, fallback to default loading");
+      console.warn("Koroksia 2025-06-25-18-45.map not found, fallback to default loading");
     }
   } catch (error) {
-    console.error("Error loading world.map:", error);
+    console.error("Error loading Koroksia 2025-06-25-18-45.map:", error);
   }
 
   // 2. Если передан maplink, загружаем карту по ссылке
