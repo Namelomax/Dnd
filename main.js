@@ -270,7 +270,22 @@ async function checkLoadParameters() {
   const url = new URL(window.location.href);
   const params = url.searchParams;
 
-  // of there is a valid maplink, try to load .map/.gz file from URL
+  // 1. Попытка загрузки world.map из корня
+  try {
+    const response = await fetch("world.map");
+    if (response.ok) {
+      WARN && console.warn("Loading map from local file: world.map");
+      const blob = await response.blob();
+      uploadMap(blob);
+      return;
+    } else {
+      console.warn("world.map not found, fallback to default loading");
+    }
+  } catch (error) {
+    console.error("Error loading world.map:", error);
+  }
+
+  // 2. Если передан maplink, загружаем карту по ссылке
   if (params.get("maplink")) {
     WARN && console.warn("Load map from URL");
     const maplink = params.get("maplink");
@@ -284,14 +299,14 @@ async function checkLoadParameters() {
     } else showUploadErrorMessage("Map link is not a valid URL", maplink);
   }
 
-  // if there is a seed (user of MFCG provided), generate map for it
+  // 3. Генерация по сидy
   if (params.get("seed")) {
     WARN && console.warn("Generate map for seed");
     await generateMapOnLoad();
     return;
   }
 
-  // check if there is a map saved to indexedDB
+  // 4. Если в onloadBehavior установлено "lastSaved" — загружаем
   if (byId("onloadBehavior").value === "lastSaved") {
     try {
       const blob = await ldb.get("lastMap");
@@ -305,10 +320,11 @@ async function checkLoadParameters() {
     }
   }
 
-  // else generate random map
+  // 5. Если ничего не подошло — создаём карту
   WARN && console.warn("Generate random map");
   generateMapOnLoad();
 }
+
 
 async function generateMapOnLoad() {
   await applyStyleOnLoad(); // apply previously selected default or custom style
