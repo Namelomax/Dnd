@@ -258,6 +258,36 @@ function hideLoading() {
   d3.select("#optionsContainer").transition().duration(2000).style("opacity", 1);
   d3.select("#tooltip").transition().duration(3000).style("opacity", 1);
 }
+async function autoLoadMap() {
+  const response = await fetch("world.map");
+  if (!response.ok) {
+    console.warn("world.map not found");
+    return;
+  }
+  
+  const blob = await response.blob();
+  const fileInput = document.getElementById("mapToLoad");
+  if (!fileInput) {
+    console.error("File input #mapToLoad not found");
+    return;
+  }
+
+  // Создаем объект File из Blob, чтобы имитировать реальный файл
+  const file = new File([blob], "world.map", { type: blob.type });
+
+  // Через DataTransfer помещаем файл в input
+  const dataTransfer = new DataTransfer();
+  dataTransfer.items.add(file);
+  fileInput.files = dataTransfer.files;
+
+  // Генерируем событие 'change', чтобы сработала стандартная логика загрузки
+  fileInput.dispatchEvent(new Event("change", { bubbles: true }));
+}
+
+// Запускаем авто-загрузку, например, при загрузке страницы
+window.addEventListener("load", () => {
+  autoLoadMap();
+});
 
 function showLoading() {
   d3.select("#loading").transition().duration(200).style("opacity", 1);
